@@ -1,6 +1,7 @@
 
 let addCart = [];
-let total = 0;
+let order = [];
+let finalTotal = 0;
 
 const selectItemIDs = () => {
     $.ajax({
@@ -136,10 +137,9 @@ $("#order-save-cart").on('click', function () {
 
 const loadOrderTable = () => {
     $("#OrderTableBody").empty();
-
-    addCart.forEach((item) => {
+        addCart.forEach((item) => {
         const itemTotal = item.getQty * item.price;
-        total += itemTotal;
+        finalTotal += itemTotal;
 
         const data = `<tr>
             <td>${item.cusId}</td>
@@ -152,6 +152,83 @@ const loadOrderTable = () => {
         $("#OrderTableBody").append(data);
     });
 
-    totalElement.val(total);
+    console.log(finalTotal)
+
+    $('#Total').val(finalTotal)
 };
 
+
+// Save Order Details
+$('#purchase').on('click', () => {
+    // Collect form data
+    let oid = $('#OrderID').val();
+    let orderDate = $('#orderDate').val();
+    let cusId = $('#customerId').val();
+    let itemId = $('#itemId').val();
+    let total = $('#Total').val();
+
+    console.log(oid + orderDate)
+
+    // Make the AJAX POST request
+    $.ajax({
+        url: "http://localhost:8080/Appliction_01_Web_exploded/Order",
+        type: "POST",
+        contentType: "application/json",
+        data: JSON.stringify({
+            oid: oid,
+            cusId: cusId,
+            orderDate: orderDate,
+            itemId: itemId,
+            total: total
+        }),
+        success: function (res) {
+            console.log("Order successfully saved to the database");
+            console.log(res);
+
+            order.push(res)
+
+            // Show success alert
+            Swal.fire({
+                position: "top-end",
+                icon: "success",
+                title: "Order Saved Successfully",
+                showConfirmButton: false,
+                timer: 1500
+            });
+
+            // Reload order details table
+            loadOrderDetailsTable();
+        },
+        error: function (error) {
+            console.error("Error saving order:", error);
+            Swal.fire({
+                icon: "error",
+                title: "Failed to Save Order",
+                text: "An error occurred while saving the order. Please try again.",
+            });
+        }
+    });
+});
+
+const loadOrderDetailsTable = () => {
+    $("#OrderDetailTableBody").empty();
+    order.forEach((order) => {
+        // Calculate total amount based on price and quantity
+        const totalAmount = order.price * order.getQty
+
+        // Get the discount value and parse it to a number
+        const discount = parseFloat($('#discout').val())
+
+        // Final total after applying the discount
+        const finalTotal = totalAmount - discount;
+
+        const data = `<tr>
+            <td>${order.oid}</td>
+            <td>${order.orderDate}</td>
+            <td>${order.cusId}</td>
+            <td>${order.itemId}</td>
+            <td>${finalTotal.toFixed(2)}</td>
+        </tr>`;
+        $("#OrderDetailTableBody").append(data);
+    });
+};

@@ -3,63 +3,49 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
-import javax.json.Json;
-import javax.json.JsonArrayBuilder;
-import javax.json.JsonObjectBuilder;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 
 
 @WebServlet(urlPatterns = "/Order")
 public class PlaceOrderServlets extends HttpServlet {
 
-   /* @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/company", "root", "1234");
+            Class.forName("com.mysql.jdbc.Driver");
 
-            // Fetch Customer IDs
-            ResultSet customerResultSet = connection.prepareStatement("SELECT id FROM customer").executeQuery();
-            JsonArrayBuilder allCustomers = Json.createArrayBuilder();
+            String oid = req.getParameter("orderID");
+            String customerID = req.getParameter("customerID");
+            String itemCode = req.getParameter("itemCode");
+            String date = req.getParameter("date");
+            String subTotal = req.getParameter("subTotal");
 
-            while (customerResultSet.next()) {
-                String id = customerResultSet.getString("id");
-                System.out.println(id);
-                JsonObjectBuilder customer = Json.createObjectBuilder();
-                customer.add("id", id);
-                allCustomers.add(customer);
+
+
+            try (Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/company", "root", "1234")) {
+
+                String sql = "INSERT INTO orderdetails (orderID, customerID ,itemCode ,date,subTotal) VALUES (?, ?, ?, ?,?)";
+                try (PreparedStatement pst = connection.prepareStatement(sql)) {
+                    pst.setString(1, oid);
+                    pst.setString(2, customerID);
+                    pst.setString(3, itemCode);
+                    pst.setString(4, date);
+                    pst.setString(5, subTotal);
+
+                    int rowsAffected = pst.executeUpdate();
+                    resp.setContentType("text/plain");
+                    if (rowsAffected > 0) {
+                        resp.getWriter().write("Item added successfully.");
+                    } else {
+                        resp.getWriter().write("Failed to add item.");
+                    }
+                }
             }
-
-            // Fetch Item Codes
-            ResultSet itemResultSet = connection.prepareStatement("SELECT item_code FROM item").executeQuery();
-            JsonArrayBuilder allItems = Json.createArrayBuilder();
-
-            while (itemResultSet.next()) {
-                String code = itemResultSet.getString("item_code");
-                JsonObjectBuilder item = Json.createObjectBuilder();
-                item.add("item_code", code);
-                System.out.println(code);
-                allItems.add(item);
-            }
-
-            // Combine Customers and Items into one JSON object
-            JsonObjectBuilder responseJson = Json.createObjectBuilder();
-            responseJson.add("customers", allCustomers);
-            responseJson.add("items", allItems);
-
-            // Set response content type and write JSON
-            resp.setContentType("application/json");
-            resp.getWriter().write(responseJson.build().toString());
-
         } catch (ClassNotFoundException | SQLException e) {
             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            resp.getWriter().write("{\"error\": \"" + e.getMessage() + "\"}");
+            resp.getWriter().write("Error: " + e.getMessage());
         }
-    }*/
+    }
 
 }
