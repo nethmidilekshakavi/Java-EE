@@ -122,42 +122,27 @@ public class CustomerServerless extends HttpServlet {
     }
 
 
-        @Override
-        protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-            try {
-                Class.forName("com.mysql.cj.jdbc.Driver");
+    @Override
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+            Connection connection=  DriverManager.getConnection("jdbc:mysql://localhost:3306/company","root","1234");
+            PreparedStatement preparedStatement = connection.prepareStatement("delete from customer where id=?");
+            String id = req.getParameter("id");
+            System.out.println(id + "delete id ekaaa");
+            preparedStatement.setString(1,id);
+            preparedStatement.executeUpdate();
+            resp.setContentType("application/json");
 
-                int id = Integer.parseInt(req.getParameter("id"));
+            resp.getWriter().write("Customer Delete successfully.");
 
-                try (Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/company", "root", "1234")) {
-                    String sql = "DELETE FROM customer WHERE id = ?";
-                    try (PreparedStatement pst = connection.prepareStatement(sql)) {
-                        pst.setInt(1, id);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
 
-                        int rowsAffected = pst.executeUpdate();
-
-                        resp.setContentType("text/plain");
-
-                        if (rowsAffected > 0) {
-                            resp.setStatus(HttpServletResponse.SC_OK);
-                            resp.getWriter().write("Customer deleted successfully.");
-                        } else {
-                            resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
-                            resp.getWriter().write("Failed to delete customer. Customer ID not found.");
-                        }
-                    }
-                }
-            } catch (ClassNotFoundException e) {
-                resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-                resp.getWriter().write("Database Driver not found: " + e.getMessage());
-            } catch (SQLException e) {
-                resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-                resp.getWriter().write("Database error: " + e.getMessage());
-            } catch (NumberFormatException e) {
-                resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                resp.getWriter().write("Invalid ID format.");
-            }
-        }
+}
+}
     }
 
 

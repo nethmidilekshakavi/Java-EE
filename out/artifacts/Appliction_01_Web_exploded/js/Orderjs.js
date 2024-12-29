@@ -1,25 +1,28 @@
 
-
 const selectItemIDs = () => {
     $.ajax({
-        url: "http://localhost:8080/Appliction_01_Web_exploded/Order",
+        url: "http://localhost:8080/Appliction_01_Web_exploded/item",
         type: "GET",
-        success: (res) => {
-            console.log(res);
+        success: function (res)  {
+            let data = res;
+            console.log(data + "item ids")
             const select = $('#itemId');
-
             // Clear existing options
             select.empty();
 
             // Add a default option
             select.append('<option value="" disabled selected>Select Item Code</option>');
 
-            // Append each item code as an option
-            res.items.forEach(item => {
-                select.append(`<option value="${item.item_code}">${item.item_code}</option>`);
-            });
+
+            for(let i = 0; i < data.length; i++){
+
+                let row = `<option value="${data[i].code}">${data[i].code}</option>`
+                $('#itemId').append(row)
+            }
+
+
         },
-        error: (err) => {
+        error: function (err)  {
             console.error(err);
             alert("Failed to load Item IDs. Please try again.");
         }
@@ -28,10 +31,11 @@ const selectItemIDs = () => {
 
 const selectCusIDs = () => {
     $.ajax({
-        url: "http://localhost:8080/Appliction_01_Web_exploded/Order",
+        url: "http://localhost:8080/Appliction_01_Web_exploded/customer",
         type: "GET",
-        success: (res) => {
-            console.log(res);
+        success: function (res) {
+            let data = res;
+            console.log(data)
             const select = $('#customerId');
 
             // Clear existing options
@@ -40,12 +44,16 @@ const selectCusIDs = () => {
             // Add a default option
             select.append('<option value="" disabled selected>Select Customer ID</option>');
 
-            // Append each item code as an option
-            res.items.forEach(item => {
-                select.append(`<option value="${item.id}">${item.id}</option>`);
-            });
+            for (let i = 0; i < data.length; i++){
+
+                let row = `<option value="${data[i].id}">${data[i].id}</option>`
+                $('#customerId').append(row)
+
+            }
+
+
         },
-        error: (err) => {
+        error: function (err)  {
             console.error(err);
             alert("Failed to load Customer IDs. Please try again.");
         }
@@ -54,8 +62,4 @@ const selectCusIDs = () => {
 
 selectItemIDs()
 selectCusIDs()
-
-
-
-
 

@@ -17,7 +17,7 @@ import java.sql.SQLException;
 @WebServlet(urlPatterns = "/Order")
 public class PlaceOrderServlets extends HttpServlet {
 
-    @Override
+   /* @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
@@ -60,6 +60,6 @@ public class PlaceOrderServlets extends HttpServlet {
             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             resp.getWriter().write("{\"error\": \"" + e.getMessage() + "\"}");
         }
-    }
+    }*/
 
 }

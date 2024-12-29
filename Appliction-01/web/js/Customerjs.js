@@ -1,13 +1,10 @@
-import {customer_Array} from "../db/database.js";
 
-// Fetch all customer data and update the array
-const fetchStudentData = () => {
+const fetchCustomerData = () => {
     $.ajax({
         url: "http://localhost:8080/Appliction_01_Web_exploded/customer",
         type: "GET",
         success: (res) => {
             console.log(res);
-            customer_Array = res;
             const tblCustomer = $('#customer-Table');
             tblCustomer.empty();
             res.forEach(customer => {
@@ -18,7 +15,7 @@ const fetchStudentData = () => {
                         <td>${customer.address}</td>
                         <td>
                             <button class="btn btn-warning btn-sm" onclick="editcutomer('${customer.id}', '${customer.name}', '${customer.address}')">Edit</button>
-                            <button class="btn btn-danger btn-sm btn-delete" data-id="${customer.id}">Delete</button>
+                             <button class="btn btn-danger btn-sm btn-delete" id="delete">Delete</button>
                         </td>
                     </tr>
                 `);
@@ -30,7 +27,7 @@ const fetchStudentData = () => {
     });
 };
 
-fetchStudentData();
+fetchCustomerData()
 
 // Save a new customer
 $('#btn_save_student').on('click', function (e) {
@@ -56,8 +53,7 @@ $('#btn_save_student').on('click', function (e) {
         success: () => {
             alert("Customer saved successfully!");
             $('#studentModal').modal('hide');
-            customer_Array.push({ id, name, address }); // Add the new customer to the array
-            fetchStudentData(); // Refresh the table
+            fetchCustomerData() // Refresh the table
             $('#id').val('');
             $('#name').val('');
             $('#address').val('');
@@ -70,7 +66,7 @@ $('#btn_save_student').on('click', function (e) {
 });
 
 // Update customer
-$('#btn_update_student').click((e) => {
+$('#btn_update_customer').click((e) => {
     e.preventDefault();
 
     const id = $('#updated_student_id').val();
@@ -90,12 +86,11 @@ $('#btn_update_student').click((e) => {
             $('#updateStudentModal').modal('hide');
 
             // Update the array
-            const index = customer_Array.findIndex(customer => customer.id === id);
-            if (index !== -1) {
-                customer_Array[index] = { id, name, address };
-            }
+            $('#updated_student_id').val('');
+            $('#updated_name').val('');
+            $('#updated_address').val('');
 
-            fetchStudentData(); // Refresh the table
+            fetchCustomerData()
         },
         error: (err) => {
             console.error(err);
@@ -112,33 +107,18 @@ const editcutomer = (id, name, address) => {
     $('#updateStudentModal').modal('show');
 };
 
-// Delete customer
-$(document).on('click', '.btn-delete', function () {
-    const id = $(this).data('id');
-
-    if (!confirm("Are you sure you want to delete this customer?")) {
-        return;
-    }
-
+$('#btn_delete_customer').click((e) => {
+    let id = $('#customerId').val();
+    console.log(id);
     $.ajax({
         url: `http://localhost:8080/Appliction_01_Web_exploded/customer?id=${id}`,
-        type: "DELETE",
-        success: () => {
-            alert("Customer deleted successfully!");
+    method : 'DELETE',
+        success : function (response) {
+        fetchCustomerData()
 
-            // Remove the customer from the array
-            customer_Array = customer_Array.filter(customer => customer.id !== id);
-
-            $(`#row-${id}`).remove(); // Remove the row from the table
-        },
-        error: (xhr) => {
-            if (xhr.status === 404) {
-                alert("Customer ID not found.");
-            } else if (xhr.status === 400) {
-                alert("Invalid ID format.");
-            } else {
-                alert("An error occurred. Please try again.");
-            }
-        }
-    });
-});
+    },
+    error : function (error){
+        console.log(error)
+    }
+})
+})
