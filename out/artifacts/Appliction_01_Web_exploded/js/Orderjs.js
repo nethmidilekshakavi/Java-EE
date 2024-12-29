@@ -1,4 +1,7 @@
 
+let addCart = [];
+let total = 0;
+
 const selectItemIDs = () => {
     $.ajax({
         url: "http://localhost:8080/Appliction_01_Web_exploded/item",
@@ -107,9 +110,48 @@ $('#itemId').on('change' ,(e) =>{
 
         }
     })
+})
 
+$("#order-save-cart").on('click', function () {
 
+    const orderData = {
+        orderId: $('#OrderID').val(),
+        orderDate: $('#orderDate').val(),
+        cusId: $('#customerId').val(),
+        cusName: $('#orderCustomer').val(),
+        code: $('#itemId').val(),
+        description: $('#description').val(),
+        price: parseFloat($('#price').val()),
+        qty: parseInt($('#quantity').val()),
+        getQty: parseInt($('#Getquantity').val()),
+        discount: parseInt($('#discout').val())
+    };
 
+    addCart.push(orderData)
+    console.log("get data cart" + orderData)
+
+    loadOrderTable()
 
 })
+
+const loadOrderTable = () => {
+    $("#OrderTableBody").empty();
+
+    addCart.forEach((item) => {
+        const itemTotal = item.getQty * item.price;
+        total += itemTotal;
+
+        const data = `<tr>
+            <td>${item.cusId}</td>
+            <td>${item.code}</td>
+            <td>${item.orderDate}</td>
+            <td>${item.price}</td>
+            <td>${item.getQty}</td>
+            <td>${itemTotal}</td>
+        </tr>`;
+        $("#OrderTableBody").append(data);
+    });
+
+    totalElement.val(total);
+};
 
