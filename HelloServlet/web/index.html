@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<h1>Ajax Example</h1>
+<p id="para">this is an example project for ajax</p>
+<img id="img">
+<button id="ajax-button">Send a Ajax Request</button>
+
+
+<table class="table table-bordered mt-3" id="tabledetails">
+    <thead>
+    <tr>
+        <th>Post ID</th>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Body</th>
+    </tr>
+    </thead>
+    <tbody id="tablebody">
+    </tbody>
+</table>
+
+<script src="Assert/js/jquery-3.7.1.min.js"></script>
+<script>
+    $('#ajax-button').click(function () {
+        $.ajax({
+            url: 'http://localhost:8080/HelloServlet_Web_exploded/hii',
+            method: 'GET',
+            async: true,
+            success: function (response) {
+                /*$("#img").attr("src", "image/icons8-person-94.png").show();*/
+                $("#para").text(response)
+            }
+        });
+    });
+</script>
+
+
+
+
+</body>
+</html>
