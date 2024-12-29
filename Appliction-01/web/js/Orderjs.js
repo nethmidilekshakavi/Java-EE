@@ -63,3 +63,49 @@ const selectCusIDs = () => {
 selectItemIDs()
 selectCusIDs()
 
+//load name
+$('#customerId').on('change',(e) =>{
+    let cid = e.target.value; //value eka target kra gannwa
+    console.log(cid +"cid eka awada")
+    $.ajax({
+        url: "http://localhost:8080/Appliction_01_Web_exploded/customer",
+        type: "GET",
+        success: function (res){
+            let data = res;
+
+            for (let i = 0; i < data.length; i++){
+                if (cid == data[i].id){
+                    $('#orderCustomer').val(data[i].name)
+                }
+            }
+        }
+    })
+
+})
+
+// load items des
+
+$('#itemId').on('change' ,(e) =>{
+
+    let code = e.target.value;
+    $.ajax({
+        url: "http://localhost:8080/Appliction_01_Web_exploded/item",
+        type: "GET",
+        success: function (res){
+
+            let data = res;
+
+            for (let i = 0; i< data.length; i++){
+                if (code == data[i].code){
+
+                    $('#description').val(data[i].description)
+                    $('#price').val(data[i].price)
+                    $('#quantity').val(data[i].qty)
+
+                }
+            }
+
+        }
+    })
+})
+
