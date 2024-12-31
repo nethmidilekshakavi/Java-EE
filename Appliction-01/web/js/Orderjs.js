@@ -24,7 +24,6 @@ const selectItemIDs = () => {
                 $('#itemId').append(row)
             }
 
-
         },
         error: function (err)  {
             console.error(err);
@@ -159,76 +158,80 @@ const loadOrderTable = () => {
 
 
 // Save Order Details
-$('#purchase').on('click', () => {
-    // Collect form data
-    let oid = $('#OrderID').val();
-    let orderDate = $('#orderDate').val();
-    let cusId = $('#customerId').val();
-    let itemId = $('#itemId').val();
-    let total = $('#Total').val();
+$("#purchase").click((e) => {
+        e.preventDefault()
 
-    console.log(oid + orderDate)
+    let orderId = $("#OrderID").val();
+    let customerId = $("#customerId").val();
+    let itemId = $("#itemId").val();
+    let date = $("#orderDate").val();
+    let subtotal = $("#Total").val();
 
-    // Make the AJAX POST request
+    console.log(orderId+"==="+customerId+"==="+subtotal)
+
     $.ajax({
-        url: "http://localhost:8080/Appliction_01_Web_exploded/Order",
+        url: "http://localhost:8080/Appliction_01_Web_exploded/order",
         type: "POST",
-        contentType: "application/json",
-        data: JSON.stringify({
-            oid: oid,
-            cusId: cusId,
-            orderDate: orderDate,
-            itemId: itemId,
-            total: total
-        }),
-        success: function (res) {
-            console.log("Order successfully saved to the database");
-            console.log(res);
+        data: {
+            orderID: orderId,
+            customerID: customerId,
+            itemCode: itemId,
+            date: date,
+            subTotal: subtotal
+        },
+        success: function (response) {
+            console.log(response);
+            orderDetails(orderId)
 
-            order.push(res)
 
-            // Show success alert
-            Swal.fire({
-                position: "top-end",
-                icon: "success",
-                title: "Order Saved Successfully",
-                showConfirmButton: false,
-                timer: 1500
-            });
 
-            // Reload order details table
-            loadOrderDetailsTable();
+
+            loadOrderDetailsTable(); // Refresh the table
         },
         error: function (error) {
             console.error("Error saving order:", error);
-            Swal.fire({
-                icon: "error",
-                title: "Failed to Save Order",
-                text: "An error occurred while saving the order. Please try again.",
-            });
         }
     });
 });
 
+function orderDetails(orderId) {
+    // Replace 'addCart' with your actual array of items
+    addCart.forEach(element => {
+        console.log(element.item_code)
+        $.ajax({
+            url: 'http://localhost:8080/Application1_war_exploded/orderdetails',
+            type: 'POST',
+            data: {
+                orderId: orderId,
+                item_code: element.item_code
+            },
+            success: function (response) {
+                console.log("Order detail saved successfully.");
+                console.log(response + "order resp")
+
+            },
+            error: function (error) {
+                console.error("Error saving order details:", error);
+            }
+        });
+    });
+}
+
 const loadOrderDetailsTable = () => {
     $("#OrderDetailTableBody").empty();
-    order.forEach((order) => {
-        // Calculate total amount based on price and quantity
-        const totalAmount = order.price * order.getQty
-
-        // Get the discount value and parse it to a number
-        const discount = parseFloat($('#discout').val())
-
-        // Final total after applying the discount
+    addCart.forEach((order) => {
+        const totalAmount = order.price * order.getQty;
+        const discount = parseFloat($('#discout').val()) || 0;
         const finalTotal = totalAmount - discount;
 
         const data = `<tr>
-            <td>${order.oid}</td>
+            <td>${order.orderId}</td>
             <td>${order.orderDate}</td>
             <td>${order.cusId}</td>
-            <td>${order.itemId}</td>
+            <td>${order.code}</td>
             <td>${finalTotal.toFixed(2)}</td>
         </tr>`;
+        console.log(data)
         $("#OrderDetailTableBody").append(data);
     });
 };

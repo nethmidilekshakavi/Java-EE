@@ -51,8 +51,6 @@ public class CustomerServerless extends HttpServlet {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-
-
     }
 
     @Override
@@ -124,26 +122,40 @@ public class CustomerServerless extends HttpServlet {
 
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        resp.setContentType("application/json");
+        int customerId = Integer.parseInt(req.getParameter("id"));
+
+
         try {
             Class.forName("com.mysql.jdbc.Driver");
-            Connection connection=  DriverManager.getConnection("jdbc:mysql://localhost:3306/company","root","1234");
-            PreparedStatement preparedStatement = connection.prepareStatement("delete from customer where id=?");
-            String id = req.getParameter("id");
-            System.out.println(id + "delete id ekaaa");
-            preparedStatement.setString(1,id);
-            preparedStatement.executeUpdate();
-            resp.setContentType("application/json");
+            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/company", "root", "1234");
 
-            resp.getWriter().write("Customer Delete successfully.");
+            PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM customer WHERE id = ?");
+            preparedStatement.setString(1, String.valueOf(customerId));
+
+            int rowsAffected = preparedStatement.executeUpdate();
+
+            if (rowsAffected > 0) {
+                resp.setStatus(HttpServletResponse.SC_OK);
+                resp.getWriter().write("{\"message\":\"Customer deleted successfully\"}");
+            } else {
+                resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                resp.getWriter().write("{\"error\":\"Customer not found\"}");
+            }
 
         } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
+            resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            resp.getWriter().write("{\"error\":\"Database driver not found\"}");
+            e.printStackTrace();
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            resp.getWriter().write("{\"error\":\"Database error occurred\"}");
+            e.printStackTrace();
+        }
+    }
+
 
 }
-}
-    }
 
 
 

@@ -16,9 +16,8 @@ const fetchItemData = () => {
                             <td>${item.qty}</td>
                             <td>${item.price}</td>
                             <td>
-                              <button class="btn btn-warning btn-sm" onclick="editItem('${item.code}', '${item.description}')">Edit</button>
-                              <button id="btn_delete_student" type="button" class="btn btn-danger" data-id="1">Delete</button>
-                            </td>
+                            <button class="btn btn-danger btn-sm">Delete</button>
+                        </td>
                         </tr>
                     `)
             })
@@ -72,44 +71,42 @@ $('#btn_save_Item').on('click', function (e) {
 fetchItemData()
 
 
-//update
-$('#btn_update_item ').click((e) => {
-    e.preventDefault()
+$('#btn_update_item').click((e) => {
+    e.preventDefault();
 
-    const code = $('#updated_Item_id').val()
-    const desc = $('#updated_desc').val()
-    const qty = $('#updated_qty').val()
-    const price = $('#updated_price').val()
+    // Get updated values from modal fields
+    const code = $('#updated_Item_id').val();
+    const desc = $('#updated_desc').val();
+    const qty = $('#updated_qty').val();
+    const price = $('#updated_price').val();
 
+    // Perform AJAX PUT request
     $.ajax({
-        url: `http://localhost:8080/Appliction_01_Web_exploded/item?item_code=${code}&description=${desc}&quantity=${qty}&price=${price}`,
+        url: `http://localhost:8080/Application_01_Web_exploded/item?item_code=${code}&description=${desc}&quantity=${qty}&price=${price}`,
         type: "PUT",
-        success: (res) => {
-            alert("Item Update successfully!");
+        data:{
+            item_code: code,
+            description: desc,
+            quantity: qty,
+            price: price
+        },
+        success: () => {
+            alert("Item updated successfully!");
             $('#updateItemModal').modal('hide');
-            fetchItemData();
+
+            // Clear modal fields
             $('#updated_Item_id').val('');
             $('#updated_desc').val('');
             $('#updated_qty').val('');
             $('#updated_price').val('');
+
+            // Refresh item data
+            fetchItemData();
         },
         error: (err) => {
             console.error(err);
-            alert("Failed to Update Item. Please try again.");
+            alert("Failed to update item. Please try again.");
         }
-    })
+    });
+});
 
-})
-
-fetchItemData()
-
-const editItem  = (code, desc, qty, price) => {
-    $('#updated_Item_id').val(code)
-    $('#updated_desc').val(desc)
-    $('#updated_qty').val(qty)
-    $('#updated_price').val(price)
-
-
-    $('#updateItemModal').modal('show')
-
-}

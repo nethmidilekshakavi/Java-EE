@@ -15,10 +15,21 @@
 
     <hr/>
 
-    <button type="button" class="btn btn-primary mb-3 text-right" data-bs-toggle="modal"
+    <button type="button" class="btn btn-success mb-3 text-right" data-bs-toggle="modal"
             data-bs-target="#studentModal">
         Add New Customer
     </button>
+
+    <button type="button" class="btn btn-warning mb-3 text-right" data-bs-toggle="modal"
+            data-bs-target="#updateCustomerModal">
+        Update Customer
+    </button>
+
+    <button type="button" class="btn btn-danger mb-3 text-right" data-bs-toggle="modal"
+            data-bs-target="#deletecustomer">
+        Delete Customer
+    </button>
+
 
     <!--     add student modal-->
     <div class="modal fade" id="studentModal" tabindex="-1" aria-labelledby="studentModalLabel" aria-hidden="true">
@@ -45,16 +56,15 @@
         </div>
     </div>
 
-    <!-- Update student Modal -->
-    <div class="modal fade" id="updateStudentModal" tabindex="-1" aria-labelledby="updateStudentModalLabel"
+    <div class="modal fade" id="updateCustomerModal" tabindex="-1" aria-labelledby="updateStudentModalLabel"
          aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="container m-2">
                     <form>
                         <div class="mb-3">
-                            <label for="updated_student_id" class="form-label">student Id</label>
-                            <input type="text" class="form-control" id="updated_student_id" readonly>
+                            <label for="updated_student_id" class="form-label">customer Id</label>
+                            <input type="text" class="form-control" id="updated_student_id">
                         </div>
                         <div class="mb-3">
                             <label for="updated_name" class="form-label">Name</label>
@@ -65,8 +75,25 @@
                             <input type="text" class="form-control" id="updated_address">
                         </div>
 
-                        <button id="btn_update_customer" type="submit" class="btn btn-primary">Update</button>
-                        <button id="btn_delete_customer" type="button" class="btn btn-danger" title="Delete Customer">Delete</button>
+                        <button id="btn_update_customer" type="submit" class="btn btn-success">Update</button>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="deletecustomer" tabindex="-1" aria-labelledby="deletecustomerModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="container m-2">
+                    <form>
+                        <div class="mb-3">
+                            <label for="delete_customer_id" class="form-label">Student ID</label>
+                            <input type="text" class="form-control" id="delete_customer_id">
+                        </div>
+
+                        <button id="btn_delete_customer" type="button" class="btn btn-danger">Delete</button>
                     </form>
                 </div>
             </div>
@@ -90,5 +117,6 @@
 <script src="js/jquery-3.7.1.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
 <script type="module" src="js/Customerjs.js"></script>
+
 </body>
 </html>

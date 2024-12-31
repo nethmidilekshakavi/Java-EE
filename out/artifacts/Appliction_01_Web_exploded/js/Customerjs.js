@@ -13,10 +13,10 @@ const fetchCustomerData = () => {
                         <td>${customer.id}</td>
                         <td>${customer.name}</td>
                         <td>${customer.address}</td>
-                        <td>
-                            <button class="btn btn-warning btn-sm" onclick="editcutomer('${customer.id}', '${customer.name}', '${customer.address}')">Edit</button>
-                             <button class="btn btn-danger btn-sm btn-delete" id="delete">Delete</button>
-                        </td>
+                       
+    <button class="btn btn-danger btn-sm btn-delete">Delete</button>
+</td>
+
                     </tr>
                 `);
             });
@@ -74,7 +74,7 @@ $('#btn_update_customer').click((e) => {
     const address = $('#updated_address').val();
 
     $.ajax({
-        url: `http://localhost:8080/Appliction_01_Web_exploded/customer`,
+        url : `http://localhost:8080/Appliction_01_Web_exploded/customer?id=${id}&name=${name}&address=${address}`,
         type: "PUT",
         data: {
             id,
@@ -83,7 +83,7 @@ $('#btn_update_customer').click((e) => {
         },
         success: () => {
             alert("Customer updated successfully!");
-            $('#updateStudentModal').modal('hide');
+            $('#updateCustomerModal').modal('hide');
 
             // Update the array
             $('#updated_student_id').val('');
@@ -99,26 +99,19 @@ $('#btn_update_customer').click((e) => {
     });
 });
 
-// Edit customer
-const editcutomer = (id, name, address) => {
-    $('#updated_student_id').val(id);
-    $('#updated_name').val(name);
-    $('#updated_address').val(address);
-    $('#updateStudentModal').modal('show');
-};
 
 $('#btn_delete_customer').click((e) => {
-    let id = $('#customerId').val();
+    let id = $('#id').val();
     console.log(id);
     $.ajax({
         url: `http://localhost:8080/Appliction_01_Web_exploded/customer?id=${id}`,
-    method : 'DELETE',
+        type : 'DELETE',
         success : function (response) {
-        fetchCustomerData()
+            fetchCustomerData()
 
-    },
-    error : function (error){
-        console.log(error)
-    }
-})
+        },
+        error : function (error){
+            console.log(error)
+        }
+    })
 })

@@ -14,10 +14,19 @@
 
     <hr/>
 
-    <button type="button" class="btn btn-primary mb-3 text-right" data-bs-toggle="modal"
-            data-bs-target="#itemModal">
+    <button type="button" class="btn btn-success mb-3 text-right" data-bs-toggle="modal" data-bs-target="#itemModal">
         Add New Item
     </button>
+
+    <button type="button" class="btn btn-warning mb-3 text-right" data-bs-toggle="modal" data-bs-target="#updateItemModal">
+        Update Item
+    </button>
+
+    <button type="button" class="btn btn-danger mb-3 text-right" data-bs-toggle="modal" data-bs-target="#deleteItemModal">
+        Delete Item
+    </button>
+
+
 
     <!-- Add Item Modal -->
     <div class="modal fade" id="itemModal" tabindex="-1" aria-labelledby="ItemModalLabel" aria-hidden="true">
@@ -57,7 +66,7 @@
                     <form id="updateItemForm">
                         <div class="mb-3">
                             <label for="updated_Item_id" class="form-label">Code</label>
-                            <input type="text" class="form-control" id="updated_Item_id" readonly>
+                            <input type="text" class="form-control" id="updated_Item_id">
                         </div>
                         <div class="mb-3">
                             <label for="updated_desc" class="form-label">Description</label>
@@ -71,8 +80,25 @@
                             <label for="updated_price" class="form-label">Price</label>
                             <input type="text" class="form-control" id="updated_price" required>
                         </div>
-
                         <button id="btn_update_item" type="submit" class="btn btn-success">Update</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="deleteitem" tabindex="-1" aria-labelledby="deletecustomerModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="container m-2">
+                    <form>
+                        <div class="mb-3">
+                            <label for="delete_customer_id" class="form-label">Customer ID</label>
+                            <input type="text" class="form-control" id="delete_customer_id">
+                        </div>
+
+                        <button id="btn_delete_item" type="button" class="btn btn-danger">Delete</button>
                     </form>
                 </div>
             </div>
