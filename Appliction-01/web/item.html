@@ -22,11 +22,9 @@
         Update Item
     </button>
 
-    <button type="button" class="btn btn-danger mb-3 text-right" data-bs-toggle="modal" data-bs-target="#deleteItemModal">
+    <button type="button" class="btn btn-danger mb-3 text-right" data-bs-toggle="modal" data-bs-target="#deleteItem">
         Delete Item
     </button>
-
-
 
     <!-- Add Item Modal -->
     <div class="modal fade" id="itemModal" tabindex="-1" aria-labelledby="ItemModalLabel" aria-hidden="true">
@@ -88,14 +86,14 @@
     </div>
 
 
-    <div class="modal fade" id="deleteitem" tabindex="-1" aria-labelledby="deletecustomerModalLabel" aria-hidden="true">
+    <div class="modal fade" id="deleteItem" tabindex="-1" aria-labelledby="deleteItemModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="container m-2">
                     <form>
                         <div class="mb-3">
-                            <label for="delete_customer_id" class="form-label">Customer ID</label>
-                            <input type="text" class="form-control" id="delete_customer_id">
+                            <label for="delete_item_code" class="form-label">Student ID</label>
+                            <input type="text" class="form-control" id="delete_item_code">
                         </div>
 
                         <button id="btn_delete_item" type="button" class="btn btn-danger">Delete</button>
@@ -105,6 +103,7 @@
         </div>
     </div>
 
+
     <!-- Item Table -->
     <table class="table table-bordered">
         <thead>
@@ -113,7 +112,7 @@
             <td>Description</td>
             <td>Qty</td>
             <td>Price</td>
-            <td>Actions</td>
+            <!--<td>Actions</td>-->
         </tr>
         </thead>
         <tbody id="ItemTableBody">

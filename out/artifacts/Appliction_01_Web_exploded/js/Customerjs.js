@@ -99,9 +99,8 @@ $('#btn_update_customer').click((e) => {
     });
 });
 
-
 $('#btn_delete_customer').click((e) => {
-    let id = $('#id').val();
+    let id = $('#delete_customer_id').val();
     console.log(id);
     $.ajax({
         url: `http://localhost:8080/Appliction_01_Web_exploded/customer?id=${id}`,

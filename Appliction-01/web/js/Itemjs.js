@@ -16,7 +16,7 @@ const fetchItemData = () => {
                             <td>${item.qty}</td>
                             <td>${item.price}</td>
                             <td>
-                            <button class="btn btn-danger btn-sm">Delete</button>
+                          
                         </td>
                         </tr>
                     `)
@@ -80,15 +80,14 @@ $('#btn_update_item').click((e) => {
     const qty = $('#updated_qty').val();
     const price = $('#updated_price').val();
 
-    // Perform AJAX PUT request
     $.ajax({
         url: `http://localhost:8080/Application_01_Web_exploded/item?item_code=${code}&description=${desc}&quantity=${qty}&price=${price}`,
         type: "PUT",
         data:{
-            item_code: code,
-            description: desc,
-            quantity: qty,
-            price: price
+            code,
+            desc,
+            qty,
+            price
         },
         success: () => {
             alert("Item updated successfully!");
@@ -110,3 +109,19 @@ $('#btn_update_item').click((e) => {
     });
 });
 
+$('#btn_delete_item').click(() => {
+    console.log("delete ekat awa")
+    let code1 = $('#delete_item_code').val();
+    console.log(code1 + "hiiiiii")
+    $.ajax({
+        url: `http://localhost:8080/Appliction_01_Web_exploded/item?item_code=${code1}`,
+        type : 'DELETE',
+        success:()=>{
+            fetchItemData()
+        },
+        error: (err) => {
+            console.error(err);
+            alert("Failed to delete item. Please try again.");
+        }
+    })
+})

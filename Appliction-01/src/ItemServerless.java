@@ -127,4 +127,42 @@ public class ItemServerless extends HttpServlet {
             resp.getWriter().write("Error: " + e.getMessage());
         }
     }
+
+    @Override
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver"); // Updated for MySQL 8.x
+
+            String code = req.getParameter("item_code");
+
+            System.out.println(code + "item code eks awada servlet ekat");
+
+            System.out.println(req);
+            if (code == null || code.isEmpty()) {
+                resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                resp.getWriter().write("Error: Item code is missing.");
+                return;
+            }
+
+            try (Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/company", "root", "1234")) {
+                String sql = "DELETE FROM item WHERE item_code=?";
+                try (PreparedStatement pst = connection.prepareStatement(sql)) {
+                    pst.setString(1, code);
+
+                    int rowsAffected = pst.executeUpdate();
+                    resp.setContentType("text/plain");
+
+                    if (rowsAffected > 0) {
+                        resp.getWriter().write("Item deleted successfully.");
+                    } else {
+                        resp.getWriter().write("Failed to delete item. Item ID not found.");
+                    }
+                }
+            }
+        } catch (ClassNotFoundException | SQLException e) {
+            resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            resp.getWriter().write("Error: " + e.getMessage());
+        }
+    }
+
 }

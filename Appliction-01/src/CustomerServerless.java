@@ -12,7 +12,6 @@ import java.sql.*;
 
 @WebServlet(urlPatterns = "/customer")
 public class CustomerServerless extends HttpServlet {
-
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
@@ -122,35 +121,30 @@ public class CustomerServerless extends HttpServlet {
 
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        resp.setContentType("application/json");
-        int customerId = Integer.parseInt(req.getParameter("id"));
-
-
         try {
             Class.forName("com.mysql.jdbc.Driver");
-            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/company", "root", "1234");
 
-            PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM customer WHERE id = ?");
-            preparedStatement.setString(1, String.valueOf(customerId));
+            String idd = req.getParameter("id");
 
-            int rowsAffected = preparedStatement.executeUpdate();
 
-            if (rowsAffected > 0) {
-                resp.setStatus(HttpServletResponse.SC_OK);
-                resp.getWriter().write("{\"message\":\"Customer deleted successfully\"}");
-            } else {
-                resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
-                resp.getWriter().write("{\"error\":\"Customer not found\"}");
+            try (Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/company", "root", "1234")) {
+
+                String sql = "delete from customer where id=?";
+                try (PreparedStatement pst = connection.prepareStatement(sql)) {
+                    pst.setString(1, idd);
+
+                    int rowsAffected = pst.executeUpdate();
+                    resp.setContentType("text/plain");
+                    if (rowsAffected > 0) {
+                        resp.getWriter().write("Item updated successfully.");
+                    } else {
+                        resp.getWriter().write("Failed to update item. Item ID not found.");
+                    }
+                }
             }
-
-        } catch (ClassNotFoundException e) {
+        } catch (ClassNotFoundException | SQLException e) {
             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            resp.getWriter().write("{\"error\":\"Database driver not found\"}");
-            e.printStackTrace();
-        } catch (SQLException e) {
-            resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            resp.getWriter().write("{\"error\":\"Database error occurred\"}");
-            e.printStackTrace();
+            resp.getWriter().write("Error: " + e.getMessage());
         }
     }
 
